@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+    <meta name="theme-color" content="#f3dcf0" />
+    <meta name="color-scheme" content="light" />
+    <title>Mochi Hop</title>
+    <link rel="icon" href="./icon-192.png" />
+    <link rel="apple-touch-icon" href="./apple-touch-icon.png" />
+    <script type="module" crossorigin src="./assets/index-DmgxlSMd.js"></script>
+    <link rel="modulepreload" crossorigin href="./assets/three-core-BIAz2Sls.js">
+    <link rel="modulepreload" crossorigin href="./assets/three-B-gt3H2L.js">
+    <link rel="stylesheet" crossorigin href="./assets/index-DxjVVGy0.css">
+  </head>
+  <body>
+    <div id="app">
+      <canvas id="game" aria-label="Mochi Hop game"></canvas>
+
+      <div id="loading" class="loading">
+        <div class="loading-blob"></div>
+      </div>
+
+      <div id="ui">
+        <!-- In-game HUD -->
+        <div id="hud" class="hud hidden">
+          <div class="score-box">
+            <div id="score" class="score">0</div>
+            <div id="hud-sub" class="score-sub"></div>
+          </div>
+          <button id="btn-pause" class="icon-btn" type="button" aria-label="Pause">
+            <svg viewBox="0 0 24 24"><rect x="6.5" y="5" width="3.8" height="14" rx="1.9" /><rect x="13.7" y="5" width="3.8" height="14" rx="1.9" /></svg>
+          </button>
+        </div>
+        <div id="combo" class="combo hidden"></div>
+        <div id="popups"></div>
+
+        <!-- Title -->
+        <div id="title" class="screen title hidden">
+          <div class="title-top">
+            <div class="settings-row">
+              <button class="icon-btn toggle" data-toggle="music" type="button" aria-label="Music">
+                <svg viewBox="0 0 24 24"><path d="M9 17.5V6.2l10-2.2v11.3" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" /><circle cx="6.6" cy="17.6" r="2.7" /><circle cx="16.6" cy="15.5" r="2.7" /></svg>
+              </button>
+              <button class="icon-btn toggle" data-toggle="sfx" type="button" aria-label="Sounds">
+                <svg viewBox="0 0 24 24"><path d="M4 9.5h3.2L12 5.6v12.8l-4.8-3.9H4z" /><path d="M15.5 9a4.2 4.2 0 0 1 0 6M18 6.6a7.6 7.6 0 0 1 0 10.8" fill="none" stroke-width="2.2" stroke-linecap="round" /></svg>
+              </button>
+              <button class="icon-btn toggle" data-toggle="haptics" type="button" aria-label="Vibration">
+                <svg viewBox="0 0 24 24"><rect x="8" y="3.5" width="8" height="17" rx="2.2" /><path d="M4.5 8.5v7M19.5 8.5v7" fill="none" stroke-width="2.2" stroke-linecap="round" /></svg>
+              </button>
+            </div>
+          </div>
+          <div class="title-center">
+            <img id="logo" class="logo" src="./logo.webp" alt="Mochi Hop" draggable="false" />
+            <div class="tagline">
+              <span class="pill">ASMR</span>
+              <span class="headphones">
+                <svg viewBox="0 0 24 24"><path d="M4 14v-2a8 8 0 0 1 16 0v2" fill="none" stroke-width="2.2" stroke-linecap="round" /><rect x="3" y="13" width="5" height="7.5" rx="2" /><rect x="16" y="13" width="5" height="7.5" rx="2" /></svg>
+                <span data-i18n="headphones"></span>
+              </span>
+            </div>
+          </div>
+          <div class="title-bottom">
+            <div class="skin-row">
+              <button id="skin-prev" class="icon-btn small" type="button" aria-label="Previous character">
+                <svg viewBox="0 0 24 24"><path d="M14.5 6 8.5 12l6 6" fill="none" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" /></svg>
+              </button>
+              <div class="skin-info">
+                <div id="skin-name" class="skin-name"></div>
+                <div id="skin-lock" class="skin-lock"></div>
+              </div>
+              <button id="skin-next" class="icon-btn small" type="button" aria-label="Next character">
+                <svg viewBox="0 0 24 24"><path d="m9.5 6 6 6-6 6" fill="none" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" /></svg>
+              </button>
+            </div>
+            <div class="mode-switch" role="tablist">
+              <button type="button" data-mode="classic" role="tab"><span data-i18n="classic"></span></button>
+              <button type="button" data-mode="zen" role="tab"><span data-i18n="zen"></span></button>
+            </div>
+            <div id="mode-hint" class="mode-hint"></div>
+            <div class="hold-hint">
+              <span class="finger"></span>
+              <span data-i18n="holdToHop"></span>
+            </div>
+            <div id="title-best" class="title-best"></div>
+          </div>
+        </div>
+
+        <!-- Tutorial -->
+        <div id="tutorial" class="tutorial hidden">
+          <div class="tut-finger"></div>
+          <div id="tut-text" class="tut-text"></div>
+        </div>
+
+        <!-- Game over -->
+        <div id="gameover" class="screen modal hidden">
+          <div class="card">
+            <div class="card-label" data-i18n="score"></div>
+            <div id="go-score" class="go-score">0</div>
+            <div id="go-newbest" class="badge hidden" data-i18n="newBest"></div>
+            <div id="go-best" class="go-best"></div>
+            <div id="go-stats" class="go-stats"></div>
+            <div class="card-row">
+              <button id="btn-home" class="icon-btn big" type="button" aria-label="Home">
+                <svg viewBox="0 0 24 24"><path d="M4 11.2 12 4.5l8 6.7V19a1.6 1.6 0 0 1-1.6 1.6H14v-5.2h-4v5.2H5.6A1.6 1.6 0 0 1 4 19z" /></svg>
+              </button>
+              <button id="btn-again" class="pill-btn primary" type="button">
+                <svg viewBox="0 0 24 24"><path d="M19 12a7 7 0 1 1-2.05-4.95" fill="none" stroke-width="2.8" stroke-linecap="round" /><path d="M19.6 3.8v4.6H15" fill="none" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                <span data-i18n="playAgain"></span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Pause -->
+        <div id="pause" class="screen modal hidden">
+          <div class="card">
+            <div class="card-title" data-i18n="paused"></div>
+            <div class="settings-row center">
+              <button class="icon-btn toggle" data-toggle="music" type="button" aria-label="Music">
+                <svg viewBox="0 0 24 24"><path d="M9 17.5V6.2l10-2.2v11.3" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" /><circle cx="6.6" cy="17.6" r="2.7" /><circle cx="16.6" cy="15.5" r="2.7" /></svg>
+              </button>
+              <button class="icon-btn toggle" data-toggle="sfx" type="button" aria-label="Sounds">
+                <svg viewBox="0 0 24 24"><path d="M4 9.5h3.2L12 5.6v12.8l-4.8-3.9H4z" /><path d="M15.5 9a4.2 4.2 0 0 1 0 6M18 6.6a7.6 7.6 0 0 1 0 10.8" fill="none" stroke-width="2.2" stroke-linecap="round" /></svg>
+              </button>
+              <button class="icon-btn toggle" data-toggle="haptics" type="button" aria-label="Vibration">
+                <svg viewBox="0 0 24 24"><rect x="8" y="3.5" width="8" height="17" rx="2.2" /><path d="M4.5 8.5v7M19.5 8.5v7" fill="none" stroke-width="2.2" stroke-linecap="round" /></svg>
+              </button>
+            </div>
+            <button id="btn-resume" class="pill-btn primary wide" type="button">
+              <svg viewBox="0 0 24 24"><path d="M8 5.5v13l10.5-6.5z" /></svg>
+              <span data-i18n="resume"></span>
+            </button>
+            <div class="card-row">
+              <button id="btn-pause-home" class="pill-btn" type="button"><span data-i18n="home"></span></button>
+              <button id="btn-restart" class="pill-btn" type="button"><span data-i18n="restart"></span></button>
+            </div>
+          </div>
+        </div>
+
+        <div id="toast" class="toast hidden"></div>
+      </div>
+    </div>
+  </body>
+</html>
